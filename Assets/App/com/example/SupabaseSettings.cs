@@ -8,5 +8,4 @@ namespace com.example
 		public string SupabaseURL = null!;
 		public string SupabaseAnonKey = null!;
 	}
-
 }
