@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Supabase.Gotrue;
 using Supabase.Gotrue.Exceptions;
 using TMPro;
@@ -18,11 +19,13 @@ namespace com.example
 		private bool _doSignIn;
 		private bool _doSignOut;
 
+		// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
 		public void SignIn()
 		{
 			_doSignIn = true;
 		}
 
+		// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
 		public void SignOut()
 		{
 			_doSignOut = true;
@@ -31,25 +34,35 @@ namespace com.example
 		[SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
 		private async void Update()
 		{
+			// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
 			if (_doSignOut)
 			{
 				await SupabaseManager.Supabase()!.Auth.SignOut();
 				_doSignOut = false;
 			}
 
-			if (!_doSignIn) return;
+			// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
+			if (_doSignIn)
+			{
+				await PerformSignIn();
+				_doSignIn = false;
+			}
+		}
 
-			_doSignIn = false;
+		// This is where we do the async work and handle exceptions
+		[SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
+		private async Task PerformSignIn()
+		{
 			try
 			{
 				Session session = (await SupabaseManager.Supabase()!.Auth.SignUp(EmailInput.text, PasswordInput.text))!;
 				ErrorText.text = $"Success! Signed Up as {session.User?.Email}";
 			}
-			catch (GotrueException gotrueException)
+			catch (GotrueException goTrueException)
 			{
-				ErrorText.text = $"{gotrueException.Reason} {gotrueException.Message}";
-				Debug.Log(gotrueException.Message, gameObject);
-				Debug.LogException(gotrueException, gameObject);
+				ErrorText.text = $"{goTrueException.Reason} {goTrueException.Message}";
+				Debug.Log(goTrueException.Message, gameObject);
+				Debug.LogException(goTrueException, gameObject);
 			}
 			catch (Exception e)
 			{
@@ -57,6 +70,5 @@ namespace com.example
 				Debug.Log(e, gameObject);
 			}
 		}
-
 	}
 }
