@@ -37,6 +37,7 @@ namespace com.example
 			// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
 			if (_doSignOut)
 			{
+				_doSignOut = false;
 				await SupabaseManager.Supabase()!.Auth.SignOut();
 				_doSignOut = false;
 			}
@@ -44,6 +45,7 @@ namespace com.example
 			// Unity does not allow async UI events, so we set a flag and use Update() to do the async work
 			if (_doSignIn)
 			{
+				_doSignIn = false;
 				await PerformSignIn();
 				_doSignIn = false;
 			}
