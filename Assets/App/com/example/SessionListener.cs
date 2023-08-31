@@ -6,8 +6,8 @@ namespace com.example
 {
 	public class SessionListener : MonoBehaviour
 	{
+		// Public Unity References
 		public SupabaseManager SupabaseManager = null!;
-
 		public TMP_Text LoggedInEmailAddress = null!;
 
 		public void UnityAuthListener(IGotrueClient<User, Session> sender, Constants.AuthState newState)
@@ -22,29 +22,25 @@ namespace com.example
 			switch (newState)
 			{
 				case Constants.AuthState.SignedIn:
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					Debug.Log("Signed In");
 					break;
 				case Constants.AuthState.SignedOut:
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					Debug.Log("Signed Out");
 					break;
 				case Constants.AuthState.UserUpdated:
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					Debug.Log("Signed In");
 					break;
 				case Constants.AuthState.PasswordRecovery:
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					Debug.Log("Password Recovery");
 					break;
 				case Constants.AuthState.TokenRefreshed:
 					Debug.Log("Token Refreshed");
 					break;
 				case Constants.AuthState.Shutdown:
-					Debug.Log("Shutting Down");
+					Debug.Log("Shutdown");
 					break;
 				default:
-					Debug.Log($"Unknown Auth State {nameof(newState)}");
+					Debug.Log("Unknown Auth State Update");
 					break;
 			}
 		}
