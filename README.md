@@ -1,4 +1,4 @@
-# supabase-unity-template
+# Supabase Unity Template
 
 Template to quickly get started using Supabase with Unity!
 
