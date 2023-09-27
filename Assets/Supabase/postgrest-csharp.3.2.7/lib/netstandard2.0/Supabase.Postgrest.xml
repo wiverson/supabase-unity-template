@@ -176,6 +176,15 @@
         <member name="P:Postgrest.Client.Options">
             <inheritdoc />
         </member>
+        <member name="M:Postgrest.Client.AddRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <inheritdoc />
+        </member>
+        <member name="M:Postgrest.Client.RemoveRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <inheritdoc />
+        </member>
+        <member name="M:Postgrest.Client.ClearRequestPreparedHandlers">
+            <inheritdoc />
+        </member>
         <member name="M:Postgrest.Client.AddDebugHandler(Postgrest.Interfaces.IPostgrestDebugger.DebugEventHandler)">
             <inheritdoc />
         </member>
@@ -203,7 +212,7 @@
         <member name="M:Postgrest.Client.Table``1">
             <inheritdoc />
         </member>
-        <member name="M:Postgrest.Client.Rpc(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="M:Postgrest.Client.Rpc(System.String,System.Object)">
             <inheritdoc />
         </member>
         <member name="T:Postgrest.ClientOptions">
@@ -417,6 +426,87 @@
             <param name="rangeTo"></param>
             <returns></returns>
         </member>
+        <member name="T:Postgrest.OnRequestPreparedEventHandler">
+            <summary>
+            Delegate representing the request to be sent to the remote server.
+            </summary>
+        </member>
+        <member name="T:Postgrest.Hooks">
+            <summary>
+            A internal singleton used for hooks applied to <see cref="T:Postgrest.Client"/> and <see cref="T:Postgrest.Table`1"/>
+            </summary>
+        </member>
+        <member name="P:Postgrest.Hooks.Instance">
+            <summary>
+            Returns the Singleton Instance.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Hooks.AddRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <summary>
+            Adds a handler that is called prior to a request being sent.
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:Postgrest.Hooks.RemoveRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <summary>
+            Removes an <see cref="T:Postgrest.OnRequestPreparedEventHandler"/> handler.
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:Postgrest.Hooks.ClearRequestPreparedHandlers">
+            <summary>
+            Clears all <see cref="T:Postgrest.OnRequestPreparedEventHandler"/> handlers.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Hooks.NotifyOnRequestPreparedHandlers(System.Object,Postgrest.ClientOptions,System.Net.Http.HttpMethod,System.String,Newtonsoft.Json.JsonSerializerSettings,System.Object,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Notifies all listeners.
+            </summary>
+            <param name="clientOptions"></param>
+            <param name="method"></param>
+            <param name="url"></param>
+            <param name="serializerSettings"></param>
+            <param name="data"></param>
+            <param name="headers"></param>
+        </member>
+        <member name="T:Postgrest.Interfaces.IPostgrestCacheProvider">
+            <summary>
+            A caching provider than can be used by postgrest to store requests.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestCacheProvider.GetItem``1(System.String)">
+             <summary>
+             Gets an item from a caching solution, should coerce into a datatype.
+            
+             This will most likely be a JSON deserialization approach.
+             </summary>
+             <param name="key">A reproducible key for a defined query.</param>
+             <typeparam name="T"></typeparam>
+             <returns></returns>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestCacheProvider.SetItem(System.String,System.Object)">
+             <summary>
+             Sets an item within a caching solution, should store in a way that the data can be retrieved and coerced into a generic type by <see cref="M:Postgrest.Interfaces.IPostgrestCacheProvider.GetItem``1(System.String)"/>
+            
+             This will most likely be a JSON serialization approach.
+             </summary>
+             <param name="key">A reproducible key for a defined query.</param>
+             <param name="value">An object of serializable data.</param>
+             <returns></returns>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestCacheProvider.ClearItem(System.String)">
+            <summary>
+            Clear an item within a caching solution by a key.
+            </summary>
+            <param name="key">A reproducible key for a defined query.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestCacheProvider.Empty">
+            <summary>
+            An empty/clear cache implementation.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Postgrest.Interfaces.IPostgrestClient">
             <summary>
             Client interface for Postgrest
@@ -430,6 +520,23 @@
         <member name="P:Postgrest.Interfaces.IPostgrestClient.Options">
             <summary>
             The Options <see cref="T:Postgrest.Client"/> was initialized with.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestClient.AddRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <summary>
+            Adds a handler that is called prior to a request being sent.
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestClient.RemoveRequestPreparedHandler(Postgrest.OnRequestPreparedEventHandler)">
+            <summary>
+            Removes an <see cref="T:Postgrest.OnRequestPreparedEventHandler"/> handler.
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestClient.ClearRequestPreparedHandlers">
+            <summary>
+            Clears all <see cref="T:Postgrest.OnRequestPreparedEventHandler"/> handlers.
             </summary>
         </member>
         <member name="M:Postgrest.Interfaces.IPostgrestClient.AddDebugHandler(Postgrest.Interfaces.IPostgrestDebugger.DebugEventHandler)">
@@ -449,7 +556,7 @@
             Clears debug handlers
             </summary>
         </member>
-        <member name="M:Postgrest.Interfaces.IPostgrestClient.Rpc(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="M:Postgrest.Interfaces.IPostgrestClient.Rpc(System.String,System.Object)">
             <summary>
             Perform a stored procedure call.
             </summary>
@@ -462,6 +569,14 @@
             Returns a Table Query Builder instance for a defined model - representative of `USE $TABLE`
             </summary>
             <typeparam name="T">Custom Model derived from `BaseModel`</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestClient.Table``1(Postgrest.Interfaces.IPostgrestCacheProvider)">
+            <summary>
+            Returns a Table Query Builder instance with a Cache Provider for a defined model - representative of `USE #$TABLE`
+            </summary>
+            <param name="cacheProvider"></param>
+            <typeparam name="T"></typeparam>
             <returns></returns>
         </member>
         <member name="T:Postgrest.Interfaces.IPostgrestDebugger">
@@ -511,6 +626,11 @@
         <member name="P:Postgrest.Interfaces.IPostgrestTable`1.TableName">
             <summary>
             Name of the Table parsed by the Model.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestTable`1.GenerateUrl">
+            <summary>
+            Generates the encoded URL with defined query parameters that will be sent to the Postgrest API.
             </summary>
         </member>
         <member name="M:Postgrest.Interfaces.IPostgrestTable`1.And(System.Collections.Generic.List{Postgrest.QueryFilter})">
@@ -876,6 +996,19 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:Postgrest.Interfaces.IPostgrestTableWithCache`1">
+            <summary>
+            Client interface for Postgrest
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Postgrest.Interfaces.IPostgrestTableWithCache`1.Get(System.Threading.CancellationToken)">
+            <summary>
+            Performs a Get request, returning a <see cref="T:Postgrest.Requests.CacheBackedRequest`1"/> which populates from the cache, if applicable.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:Postgrest.Index">
             <summary>Represent a type can be used to index a collection either from the start or the end.</summary>
             <remarks>
@@ -1184,6 +1317,22 @@
             Gets the values of the PrimaryKey columns (there can be multiple) on a model's instance as defined by the [PrimaryKey] attributes on a property on the model.
             </summary>
         </member>
+        <member name="T:Postgrest.Models.CachedModel`1">
+            <summary>
+            Represents a cacheable model
+            </summary>
+            <typeparam name="TModel"></typeparam>
+        </member>
+        <member name="P:Postgrest.Models.CachedModel`1.Models">
+            <summary>
+            The stored Models
+            </summary>
+        </member>
+        <member name="P:Postgrest.Models.CachedModel`1.CachedAt">
+            <summary>
+            Cache time in UTC.
+            </summary>
+        </member>
         <member name="T:Postgrest.PostgrestContractResolver">
             <summary>
             A custom resolver that handles mapping column names and property names as well
@@ -1319,6 +1468,110 @@
             <summary>
             /// By specifying the onConflict query parameter, you can make UPSERT work on a column(s) that has a UNIQUE constraint.
             </summary>
+        </member>
+        <member name="T:Postgrest.Requests.CacheBackedRequest`1">
+            <summary>
+            Represents a Request that is backed by a caching strategy.
+            </summary>
+            <typeparam name="TModel"></typeparam>
+        </member>
+        <member name="T:Postgrest.Requests.CacheBackedRequest`1.RemoteModelsPopulatedEventHandler">
+            <summary>
+            Handler for when Remote Models have been populated
+            </summary>
+        </member>
+        <member name="F:Postgrest.Requests.CacheBackedRequest`1._remoteRequestAction">
+            <summary>
+            The Async action that represents the Remote Request
+            </summary>
+        </member>
+        <member name="F:Postgrest.Requests.CacheBackedRequest`1._instance">
+            <summary>
+            The Postgrest Table Instance
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.CacheKey">
+            <summary>
+            The Cache lookup key - a Base64 encoded reproducible URL for this request configuration.
+            </summary>
+        </member>
+        <member name="F:Postgrest.Requests.CacheBackedRequest`1._cacheProvider">
+            <summary>
+            The Caching provider.
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.Models">
+            <summary>
+            The Models returned either by Cache Hit or Remote Response
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.Response">
+            <summary>
+            The response (if applicable) from <see cref="F:Postgrest.Requests.CacheBackedRequest`1._remoteRequestAction"/>
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.WasCacheHit">
+            <summary>
+            If the cache was hit for this request.
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.WasResponseCached">
+            <summary>
+            If the response was stored in cache.
+            </summary>
+        </member>
+        <member name="P:Postgrest.Requests.CacheBackedRequest`1.CacheTime">
+            <summary>
+            The stored cache time in UTC.
+            </summary>
+        </member>
+        <member name="E:Postgrest.Requests.CacheBackedRequest`1.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:Postgrest.Requests.CacheBackedRequest`1.RemoteModelsPopulated">
+            <summary>
+            Invoked when Remote Models have been populated on this object.
+            </summary>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.#ctor(Postgrest.Interfaces.IPostgrestTableWithCache{`0},Postgrest.Interfaces.IPostgrestCacheProvider,System.Func{System.Threading.Tasks.Task{Postgrest.Responses.ModeledResponse{`0}}})">
+            <summary>
+            Constructs a Cache Backed Request that automatically populates itself using the Cache provider (if possible).
+            </summary>
+            <param name="instance"></param>
+            <param name="cacheProvider"></param>
+            <param name="remoteRequestAction"></param>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.TryLoadFromCache">
+            <summary>
+            Attempts to load a model from the cache. 
+            </summary>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.Invoke">
+            <summary>
+            Invokes the stored <see cref="F:Postgrest.Requests.CacheBackedRequest`1._remoteRequestAction"/>
+            </summary>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.Cache(Postgrest.Responses.ModeledResponse{`0})">
+            <summary>
+            Caches a modeled response using the <see cref="F:Postgrest.Requests.CacheBackedRequest`1._cacheProvider"/>
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.OnPropertyChanged(System.String)">
+            <summary>
+            Raises a property change event.
+            </summary>
+            <param name="propertyName"></param>
+        </member>
+        <member name="M:Postgrest.Requests.CacheBackedRequest`1.SetField``1(``0@,``0,System.String)">
+            <summary>
+            Sets a field within this instance and raises <see cref="M:Postgrest.Requests.CacheBackedRequest`1.OnPropertyChanged(System.String)"/>
+            </summary>
+            <param name="field"></param>
+            <param name="value"></param>
+            <param name="propertyName"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
         </member>
         <member name="T:Postgrest.Responses.BaseResponse">
             <summary>
@@ -1514,6 +1767,27 @@
             </summary>
             <param name="data"></param>
             <param name="options"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Postgrest.TableWithCache`1">
+            <summary>
+            Represents a table constructed with a <see cref="T:Postgrest.Interfaces.IPostgrestCacheProvider"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Postgrest.TableWithCache`1.CacheProvider">
+            <summary>
+            Represents a caching provider to be used with Get Requests.
+            </summary>
+        </member>
+        <member name="M:Postgrest.TableWithCache`1.#ctor(System.String,Postgrest.Interfaces.IPostgrestCacheProvider,Newtonsoft.Json.JsonSerializerSettings,Postgrest.ClientOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Postgrest.TableWithCache`1.Get(System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
